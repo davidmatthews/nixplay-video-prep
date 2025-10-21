@@ -51,6 +51,18 @@ encode_file() {
       -pix_fmt yuv420p \
       "$OUTPUT"
 
+    if [ $? -eq 0 ]; then
+        # Create "originals" folder if it doesn't exist
+        ORIGINALS_DIR="${DIRNAME}/originals"
+        mkdir -p "$ORIGINALS_DIR"
+
+        # Move original file
+        mv "$INPUT" "$ORIGINALS_DIR/"
+        echo "📦 Moved original to: $ORIGINALS_DIR/"
+    else
+        echo "❌ Encoding failed for: $INPUT"
+    fi
+
     echo "✅ Done: $OUTPUT"
 }
 
