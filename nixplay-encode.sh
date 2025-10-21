@@ -1,19 +1,24 @@
 #!/bin/bash
 # Encode videos for Nixplay photo frames using FFmpeg
-# Usage: ./nixplay-encode.sh input.mp4 output.mp4 [bitrate in kbps]
+# Automatically names output as "inputname-nixplay-720p.mp4"
+# Usage: ./encode_nixplay.sh input.mp4 [bitrate]
 
 # Check arguments
-if [ "$#" -lt 2 ]; then
-    echo "Usage: $0 input.mp4 output.mp4 [bitrate]"
-    echo "Example: $0 vacation.mov vacation_nixplay.mp4 2000"
+if [ "$#" -lt 1 ]; then
+    echo "Usage: $0 input.mp4 [bitrate]"
+    echo "Example: $0 vacation.mov 2000"
     exit 1
 fi
 
 INPUT="$1"
-OUTPUT="$2"
-BITRATE="${3:-2000}" # Default to 2000 kbps if not provided
+BITRATE="${2:-2000}" # Default to 2000 kbps
 
-# Detect orientation (portrait vs landscape)
+# Derive output name
+BASENAME="$(basename "$INPUT")"
+NAME="${BASENAME%.*}"
+OUTPUT="${NAME}-nixplay-720p.mp4"
+
+# Detect orientation
 WIDTH=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$INPUT")
 HEIGHT=$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$INPUT")
 
@@ -25,8 +30,12 @@ else
     SCALE="scale=720:-2"
 fi
 
-echo "Encoding $INPUT -> $OUTPUT"
-echo "Bitrate: ${BITRATE}k | Scale: $SCALE"
+echo "---------------------------------------------"
+echo "Encoding: $INPUT"
+echo "Output:   $OUTPUT"
+echo "Bitrate:  ${BITRATE}k"
+echo "Scaling:  $SCALE"
+echo "---------------------------------------------"
 
 ffmpeg -i "$INPUT" \
   -vf "$SCALE" \
