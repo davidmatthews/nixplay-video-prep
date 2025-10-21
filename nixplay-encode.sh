@@ -80,7 +80,7 @@ if [ -d "$TARGET" ]; then
     FILES=()
     while IFS= read -r -d '' FILE; do
         FILES+=("$FILE")
-    done < <(find "$TARGET" -type f \( -iname "*.mp4" -o -iname "*.mov" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.m4v" \) -print0)
+    done < <(find "$TARGET" -maxdepth 1 -type f \( -iname "*.mp4" -o -iname "*.mov" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.m4v" \) -print0)
 
     for FILE in "${FILES[@]}"; do
         encode_file "$FILE"
