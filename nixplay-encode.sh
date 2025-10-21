@@ -1,6 +1,6 @@
 #!/bin/bash
 # Encode videos for Nixplay photo frames using FFmpeg
-# Automatically names output as "inputname-nixplay-720p.mp4"
+# Automatically outputs as "<original>-nixplay-720p.mp4" in the same folder
 # Usage: ./encode_nixplay.sh input.mp4 [bitrate]
 
 # Check arguments
@@ -13,12 +13,13 @@ fi
 INPUT="$1"
 BITRATE="${2:-2000}" # Default to 2000 kbps
 
-# Derive output name
+# Derive file path components
+DIRNAME="$(dirname "$INPUT")"
 BASENAME="$(basename "$INPUT")"
 NAME="${BASENAME%.*}"
-OUTPUT="${NAME}-nixplay-720p.mp4"
+OUTPUT="${DIRNAME}/${NAME}-nixplay-720p.mp4"
 
-# Detect orientation
+# Detect orientation using ffprobe
 WIDTH=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$INPUT")
 HEIGHT=$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$INPUT")
 
