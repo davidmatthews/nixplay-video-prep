@@ -45,7 +45,7 @@ encode_file() {
 
     ffmpeg -y -i "$INPUT" \
       -vf "$SCALE" \
-      -c:v libx265 -b:v ${BITRATE}k -tag:v hvc1 \
+      -c:v libx265 -preset medium -b:v ${BITRATE}k -tag:v hvc1 \
       -c:a aac -b:a 128k -ac 2 \
       -movflags +faststart \
       -pix_fmt yuv420p \
